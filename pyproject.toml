@@ -7,10 +7,13 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic = "^1.10.3"
+pydantic = {extras = ["dotenv"], version = "^1.10.3"}
 fastapi = "^0.88.0"
 motor = "^3.1.1"
 odmantic = "^0.9.1"
+jitproxy = "^1.1.0"
+clearcut = "^0.2.2.post0"
+uvicorn = "^0.20.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -18,3 +21,15 @@ pytest = "^7.2.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+known_local_folder = ["jotbackend"]
+profile = "black"
+line_length = 140
+multi_line_output = 3
+
+[tool.black]
+line-length = 140
+
+[tool.poetry.scripts]
+jotbackend = "jotbackend.api:main"
