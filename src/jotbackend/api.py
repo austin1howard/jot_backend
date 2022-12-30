@@ -10,7 +10,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from jotbackend import dao
 from jotbackend.domain import CreateJot, Jot
-from jotbackend.util import narvhal
+from jotbackend.util import narvhal, get_subject_from_token
 
 app = FastAPI(
     title="Jot Backend",
@@ -21,17 +21,11 @@ app = FastAPI(
 security = HTTPBearer()
 
 
-def get_current_username(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    current_credentials_bytes = credentials.credentials.encode("utf8")
-    correct_credentials_bytes = b"imsecure"
-    is_correct_credentials = secrets.compare_digest(current_credentials_bytes, correct_credentials_bytes)
-    if not is_correct_credentials:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect credentials",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.credentials
+def get_user_email(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    # This is a JWT, check it
+    email = get_subject_from_token(credentials.credentials)
+
+    return email
 
 
 @app.get("/")
@@ -40,7 +34,7 @@ async def ping():
 
 
 @app.post("/jot", status_code=201)
-async def create_jot(jot: CreateJot, username: str = Depends(get_current_username)):
+async def create_jot(jot: CreateJot, email: str = Depends(get_user_email)):
     jot = Jot(
         plain_text=jot.plain_text,
         created_at=datetime.utcnow(),

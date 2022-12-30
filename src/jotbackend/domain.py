@@ -42,11 +42,14 @@ class RuntimeSettings(BaseSettings):
         env_prefix = "JOT_"
         case_sensitive = False
 
-    mongodb_endpoint: Optional[str] = None
-    mongodb_user: Optional[str] = None
-    mongodb_pass: Optional[str] = None
-    mongodb_cert: Optional[Path] = None
+    mongodb_endpoint: str
+    mongodb_user: Optional[str]
+    mongodb_pass: Optional[str]
+    mongodb_cert: Optional[Path]
     mongodb_db_name: str = "jot_mongo"
+
+    jwt_secret: str
+    jwt_issuer: str = "jot"
 
 
 runtime_settings = RuntimeSettings()

@@ -14,6 +14,7 @@ odmantic = "^0.9.1"
 jitproxy = "^1.1.0"
 clearcut = "^0.2.2.post0"
 uvicorn = "^0.20.0"
+python-jose = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
