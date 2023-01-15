@@ -4,10 +4,15 @@ Domain objects
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypeVar
 
-from odmantic import Field, Model
+from odmantic import EmbeddedModel
+from odmantic import Field as ODField
+from odmantic import Model
 from pydantic import BaseModel, BaseSettings
+from pydantic import Field as PydField
+
+HandlerData = TypeVar("HandlerData", bound=EmbeddedModel)
 
 
 class CreateJot(BaseModel):
@@ -16,8 +21,8 @@ class CreateJot(BaseModel):
     """
 
     plain_text: str
-    latitude: Optional[float] = Field(..., ge=-90, le=90)
-    longitude: Optional[float] = Field(..., ge=-180, le=180)
+    latitude: Optional[float] = PydField(..., ge=-90, le=90)
+    longitude: Optional[float] = PydField(..., ge=-180, le=180)
 
 
 class Jot(Model):
@@ -30,9 +35,10 @@ class Jot(Model):
     plain_text: str
     created_at: datetime
     # Can't do Optional embedded models until https://github.com/art049/odmantic/pull/273 is merged.
-    latitude: Optional[float] = Field(..., ge=-90, le=90)
-    longitude: Optional[float] = Field(..., ge=-180, le=180)
+    latitude: Optional[float] = ODField(..., ge=-90, le=90)
+    longitude: Optional[float] = ODField(..., ge=-180, le=180)
     handled: bool = False
+    handler_data: Optional[HandlerData] = None
 
 
 class RuntimeSettings(BaseSettings):
